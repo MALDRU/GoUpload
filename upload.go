@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 //UploadSetup Configuracion Upload
@@ -16,7 +17,7 @@ type UploadSetup struct {
 }
 
 //Upload sube un archivo a la carpeta indicada en el servidor
-func (u UploadSetup) Upload(r *http.Request) error {
+func (u UploadSetup) Upload(r *http.Request, name string) error {
 	file, header, err := r.FormFile(u.NameInput)
 	if err != nil {
 		return err
@@ -36,7 +37,9 @@ func (u UploadSetup) Upload(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(u.RutaArchivos+header.Filename, data, 0666)
+	segmentados := strings.Split(header.Filename, ".")
+	extencion := segmentados[len(segmentados)-1]
+	return ioutil.WriteFile(u.RutaArchivos+name+extencion, data, 0666)
 }
 
 func (u UploadSetup) buscarMime(mimeType string) bool {
@@ -49,5 +52,5 @@ func (u UploadSetup) buscarMime(mimeType string) bool {
 }
 
 func (u UploadSetup) getLimiteUpload() int64 {
-	return int64(u.LimiteUpload * 1024 * 1024)
+	return int64(u.LimiteUpload * 1024)
 }
