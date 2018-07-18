@@ -39,7 +39,7 @@ func (u UploadSetup) Upload(r *http.Request, name string) error {
 	}
 	segmentados := strings.Split(header.Filename, ".")
 	extencion := segmentados[len(segmentados)-1]
-	return ioutil.WriteFile(u.RutaArchivos+name+extencion, data, 0666)
+	return ioutil.WriteFile(u.RutaArchivos+name+"."+extencion, data, 0666)
 }
 
 func (u UploadSetup) buscarMime(mimeType string) bool {
