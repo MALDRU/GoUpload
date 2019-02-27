@@ -14,10 +14,11 @@ type UploadSetup struct {
 	PermitirExtenciones bool
 	RutaArchivos        string
 	LimiteUpload        float32
+	Ext                 string
 }
 
 //Upload sube un archivo a la carpeta indicada en el servidor
-func (u UploadSetup) Upload(r *http.Request, name string) error {
+func (u *UploadSetup) Upload(r *http.Request, name string) error {
 	file, header, err := r.FormFile(u.NameInput)
 	if err != nil {
 		return err
@@ -39,6 +40,7 @@ func (u UploadSetup) Upload(r *http.Request, name string) error {
 	}
 	segmentados := strings.Split(header.Filename, ".")
 	extencion := segmentados[len(segmentados)-1]
+	u.Ext = extencion
 	return ioutil.WriteFile(u.RutaArchivos+name+"."+extencion, data, 0666)
 }
 
